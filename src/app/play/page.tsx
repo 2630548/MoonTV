@@ -1228,7 +1228,6 @@ function PlayPageClient() {
       artPlayerRef.current = new Artplayer({
         container: artRef.current,
         url: videoUrl,
-        // preload: 'auto', // 'auto' | 'metadata' | 'none'
         poster: videoCover,
         volume: 0.7,
         isLive: false,
@@ -1259,6 +1258,7 @@ function PlayPageClient() {
         lock: true,
         moreVideoAttr: {
           crossOrigin: 'anonymous',
+          preload: 'auto', // 'auto' | 'metadata' | 'none'
         },
         // HLS 支持配置
         customType: {
