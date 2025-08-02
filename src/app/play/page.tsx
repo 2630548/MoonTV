@@ -1280,7 +1280,7 @@ function PlayPageClient() {
               maxBufferLength: 100, // 前向缓冲最大 30s，过大容易导致高延迟
               backBufferLength: 30, // 仅保留 30s 已播放内容，避免内存占用
               maxBufferSize: 200 * 1000 * 1000, // 约 60MB，超出后触发清理
-              maxConcurrentRequests: 6,    // 最大并发请求数
+              // maxConcurrentRequests: 6,    // 最大并发请求数
 
               /* 自定义loader */
               loader: blockAdEnabledRef.current
@@ -1293,6 +1293,14 @@ function PlayPageClient() {
             video.hls = hls;
 
             ensureVideoSource(video, url);
+
+            hls.on(Hls.Events.FRAG_LOADING, (event, data) => {
+    console.log(`[加载分片] SN=${data.frag.sn}, URL=${data.frag.url}`);
+});
+hls.on(Hls.Events.FRAG_LOADED, (event, data) => {
+    console.log(`[分片完成] SN=${data.frag.sn}`);
+});
+
 
             hls.on(Hls.Events.ERROR, function (event: any, data: any) {
               console.error('HLS Error:', event, data);
