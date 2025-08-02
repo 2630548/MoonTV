@@ -1228,7 +1228,7 @@ function PlayPageClient() {
       artPlayerRef.current = new Artplayer({
         container: artRef.current,
         url: videoUrl,
-        preload: 'auto', // 'auto' | 'metadata' | 'none'
+        // preload: 'auto', // 'auto' | 'metadata' | 'none'
         poster: videoCover,
         volume: 0.7,
         isLive: false,
