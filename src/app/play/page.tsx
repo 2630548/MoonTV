@@ -1277,7 +1277,7 @@ function PlayPageClient() {
               lowLatencyMode: true, // 开启低延迟 LL-HLS
 
               /* 缓冲/内存相关 */
-              maxBufferLength: 100, // 前向缓冲最大 30s，过大容易导致高延迟
+              maxBufferLength: 300, // 前向缓冲最大 30s，过大容易导致高延迟
               backBufferLength: 30, // 仅保留 30s 已播放内容，避免内存占用
               maxBufferSize: 200 * 1000 * 1000, // 约 60MB，超出后触发清理
               // maxConcurrentRequests: 6,    // 最大并发请求数
@@ -1295,10 +1295,10 @@ function PlayPageClient() {
             ensureVideoSource(video, url);
 
             hls.on(Hls.Events.FRAG_LOADING, (event, data) => {
-    console.log(`[加载分片] SN=${data.frag.sn}, URL=${data.frag.url}`);
+    console.log(new Date()+`[加载分片] SN=${data.frag.sn}, URL=${data.frag.url}`);
 });
 hls.on(Hls.Events.FRAG_LOADED, (event, data) => {
-    console.log(`[分片完成] SN=${data.frag.sn}`);
+    console.log(new Date()+`[分片完成] SN=${data.frag.sn}`);
 });
 
 
