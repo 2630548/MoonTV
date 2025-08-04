@@ -558,14 +558,16 @@ function PlayPageClient() {
     }
   };
 
-  class CustomHlsJsLoader extends Hls.DefaultConfig.loader {
+ class CustomHlsJsLoader extends Hls.DefaultConfig.loader {
+    private threadPool: Worker[];
+    private maxThreads: number;
+
     constructor(config: any) {
         super(config);
-        const load = this.load.bind(this);
+        this.maxThreads = navigator.hardwareConcurrency || 4;
+        this.threadPool = Array(this.maxThreads).fill(null).map(() => this.createTsLoaderWorker());
         
-        // 创建线程池
-        const threadPool = new Map();
-        const maxThreads = navigator.hardwareConcurrency || 4; // 获取CPU核心数或默认4线程
+        const originalLoad = this.load.bind(this);
         
         this.load = function (context: any, config: any, callbacks: any) {
             // 拦截manifest和level请求
@@ -577,173 +579,189 @@ function PlayPageClient() {
                     }
                     return onSuccess(response, stats, context);
                 };
-                // 执行原始load方法
-                load(context, config, callbacks);
+                originalLoad(context, config, callbacks);
             } 
             // TS片段请求 - 使用多线程加载
             else if (context.type === 'frag') {
-                this.loadTsSegmentWithThreads(context, config, callbacks, threadPool, maxThreads);
+                this.loadTsSegmentWithThreads(context, config, callbacks);
             } 
             // 其他类型请求
             else {
-                // load(context, config, callbacks);
-              this.loadTsSegmentWithThreads(context, config, callbacks, threadPool, maxThreads);
+                originalLoad(context, config, callbacks);
             }
         };
     }
 
-    /**
-     * 使用多线程加载TS片段
-     */
-    loadTsSegmentWithThreads(context: any, config: any, callbacks: any, threadPool: Map<number, Worker>, maxThreads: number) {
-        const url = context.url;
-        const frag = context.frag;
-        const progressCallback = callbacks.onProgress;
-        const successCallback = callbacks.onSuccess;
-        const errorCallback = callbacks.onError;
+    private loadTsSegmentWithThreads(context: any, config: any, callbacks: any) {
+        const worker = this.getAvailableWorker();
+        const requestId = Math.random().toString(36).substring(2, 10);
         
-        // 创建或复用Web Worker
-        const workerId = Math.floor(Math.random() * maxThreads);
-        let worker = threadPool.get(workerId);
-        
-        if (!worker) {
-            worker = this.createTsLoaderWorker();
-            threadPool.set(workerId, worker);
-        }
-        
-        // 设置超时
         const timeout = setTimeout(() => {
-            worker!.terminate();
-            threadPool.delete(workerId);
-            errorCallback({ type: 'networkError', details: 'timeout', fatal: false }, context);
+            worker.postMessage({ type: 'abort', id: requestId });
+            callbacks.onError({ type: 'networkError', details: 'timeout', fatal: false }, context);
         }, config.timeout || 10000);
-        
-        // 处理Worker消息
-        worker.onmessage = (e) => {
-            if (e.data.type === 'progress') {
-                progressCallback(e.data.data, context);
-            } else if (e.data.type === 'success') {
-                clearTimeout(timeout);
-                successCallback({
-                    url: url,
-                    data: e.data.data,
-                }, {
-                    trequest: e.data.stats.trequest,
-                    tfirst: e.data.stats.tfirst,
-                    tload: e.data.stats.tload,
-                    loaded: e.data.stats.loaded
-                }, context);
-            } else if (e.data.type === 'error') {
-                clearTimeout(timeout);
-                errorCallback(e.data.error, context);
+
+        const handleMessage = (e: MessageEvent) => {
+            if (e.data.id !== requestId) return;
+
+            switch (e.data.type) {
+                case 'progress':
+                    callbacks.onProgress(e.data.data, context);
+                    break;
+                case 'success':
+                    clearTimeout(timeout);
+                    callbacks.onSuccess({
+                        url: context.url,
+                        data: e.data.data,
+                    }, {
+                        trequest: e.data.stats.trequest,
+                        tfirst: e.data.stats.tfirst,
+                        tload: e.data.stats.tload,
+                        loaded: e.data.stats.loaded
+                    }, context);
+                    worker.removeEventListener('message', handleMessage);
+                    break;
+                case 'error':
+                    clearTimeout(timeout);
+                    callbacks.onError(e.data.error, context);
+                    worker.removeEventListener('message', handleMessage);
+                    break;
             }
         };
+
+        worker.addEventListener('message', handleMessage);
         
-        // 发送加载请求到Worker
+        // 只发送可以序列化的数据
         worker.postMessage({
             type: 'load',
-            url: url,
-            frag: frag,
-            config: config
+            id: requestId,
+            url: context.url,
+            config: {
+                timeout: config.timeout,
+                headers: config.headers
+            }
         });
     }
-    
-    /**
-     * 创建TS加载专用的Web Worker
-     */
-    createTsLoaderWorker(): Worker {
+
+    private getAvailableWorker(): Worker {
+        // 简单的轮询选择worker
+        return this.threadPool[Math.floor(Math.random() * this.threadPool.length)];
+    }
+
+    private createTsLoaderWorker(): Worker {
         const workerCode = `
+            const activeRequests = new Map();
+            
             self.onmessage = function(e) {
-                if (e.data.type !== 'load') return;
+                const { type, id, url, config } = e.data;
                 
-                const url = e.data.url;
-                const frag = e.data.frag;
-                const config = e.data.config;
-                const stats = {
-                    trequest: performance.now(),
-                    tfirst: 0,
-                    tload: 0,
-                    loaded: 0
-                };
-                
-                const xhr = new XMLHttpRequest();
-                xhr.open('GET', url, true);
-                xhr.responseType = 'arraybuffer';
-                
-                xhr.onprogress = function(event) {
-                    if (event.lengthComputable) {
-                        stats.loaded = event.loaded;
-                        stats.tfirst = stats.tfirst || performance.now();
-                        self.postMessage({
-                            type: 'progress',
-                            data: {
-                                length: event.total,
-                                loaded: event.loaded
-                            },
-                            stats: stats
-                        });
-                    }
-                };
-                
-                xhr.onload = function() {
-                    stats.tload = performance.now();
-                    if (xhr.status >= 200 && xhr.status < 300) {
-                        self.postMessage({
-                            type: 'success',
-                            data: xhr.response,
-                            stats: stats
-                        });
-                    } else {
-                        self.postMessage({
-                            type: 'error',
-                            error: {
-                                type: 'networkError',
-                                details: 'httpStatus' + xhr.status,
-                                fatal: false
-                            }
-                        });
-                    }
-                };
-                
-                xhr.onerror = function() {
-                    self.postMessage({
-                        type: 'error',
-                        error: {
-                            type: 'networkError',
-                            details: 'xhrError',
-                            fatal: false
+                if (type === 'load') {
+                    const stats = {
+                        trequest: performance.now(),
+                        tfirst: 0,
+                        tload: 0,
+                        loaded: 0
+                    };
+                    
+                    const xhr = new XMLHttpRequest();
+                    activeRequests.set(id, xhr);
+                    
+                    xhr.open('GET', url, true);
+                    xhr.responseType = 'arraybuffer';
+                    
+                    xhr.onprogress = function(event) {
+                        if (event.lengthComputable) {
+                            stats.loaded = event.loaded;
+                            stats.tfirst = stats.tfirst || performance.now();
+                            self.postMessage({
+                                type: 'progress',
+                                id: id,
+                                data: {
+                                    length: event.total,
+                                    loaded: event.loaded
+                                },
+                                stats: stats
+                            });
                         }
-                    });
-                };
-                
-                // 设置请求头
-                if (config.headers) {
-                    for (let header in config.headers) {
-                        xhr.setRequestHeader(header, config.headers[header]);
-                    }
-                }
-                
-                // 设置超时
-                if (config.timeout) {
-                    xhr.timeout = config.timeout;
-                    xhr.ontimeout = function() {
+                    };
+                    
+                    xhr.onload = function() {
+                        activeRequests.delete(id);
+                        stats.tload = performance.now();
+                        if (xhr.status >= 200 && xhr.status < 300) {
+                            self.postMessage({
+                                type: 'success',
+                                id: id,
+                                data: xhr.response,
+                                stats: stats
+                            });
+                        } else {
+                            self.postMessage({
+                                type: 'error',
+                                id: id,
+                                error: {
+                                    type: 'networkError',
+                                    details: 'httpStatus' + xhr.status,
+                                    fatal: false
+                                }
+                            });
+                        }
+                    };
+                    
+                    xhr.onerror = function() {
+                        activeRequests.delete(id);
                         self.postMessage({
                             type: 'error',
+                            id: id,
                             error: {
                                 type: 'networkError',
-                                details: 'timeout',
+                                details: 'xhrError',
                                 fatal: false
                             }
                         });
                     };
+                    
+                    if (config.headers) {
+                        for (let header in config.headers) {
+                            xhr.setRequestHeader(header, config.headers[header]);
+                        }
+                    }
+                    
+                    if (config.timeout) {
+                        xhr.timeout = config.timeout;
+                        xhr.ontimeout = function() {
+                            activeRequests.delete(id);
+                            self.postMessage({
+                                type: 'error',
+                                id: id,
+                                error: {
+                                    type: 'networkError',
+                                    details: 'timeout',
+                                    fatal: false
+                                }
+                            });
+                        };
+                    }
+                    
+                    xhr.send();
+                } else if (type === 'abort') {
+                    const xhr = activeRequests.get(id);
+                    if (xhr) {
+                        xhr.abort();
+                        activeRequests.delete(id);
+                    }
                 }
-                
-                xhr.send();
             };
         `;
         
         const blob = new Blob([workerCode], { type: 'application/javascript' });
         return new Worker(URL.createObjectURL(blob));
+    }
+
+    destroy() {
+        super.destroy();
+        this.threadPool.forEach(worker => worker.terminate());
+        this.threadPool = [];
     }
 }
 
