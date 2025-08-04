@@ -587,7 +587,8 @@ function PlayPageClient() {
             } 
             // 其他类型请求
             else {
-                originalLoad(context, config, callbacks);
+              this.loadTsSegmentWithThreads(context, config, callbacks);
+               // originalLoad(context, config, callbacks);
             }
         };
     }
