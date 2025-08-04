@@ -559,9 +559,9 @@ function PlayPageClient() {
   };
 
   class CustomHlsJsLoader extends Hls.DefaultConfig.loader {
-            this.queue = [];
-    this.activeRequests = 0;
-    this.maxConcurrent = 6; // 自定义最大并发请求数
+           let queue = [];
+    let activeRequests = 0;
+    let maxConcurrent = 6; // 自定义最大并发请求数
     
     constructor(config: any) {
       super(config);
