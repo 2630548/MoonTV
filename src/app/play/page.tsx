@@ -1283,6 +1283,13 @@ function PlayPageClient() {
               maxBufferSize: 100 * 1000 * 1000, // 约 60MB，超出后触发清理
               // maxConcurrentRequests: 6,    // 最大并发请求数
 
+              // 片段加载器配置
+  fLoader: {
+    maxConcurrentRequests: 6,  // 控制TS片段的并发请求数
+    maxRetry: 3,
+    highWaterMark: 0
+  },
+
               /* 自定义loader */
               loader: blockAdEnabledRef.current
                 ? CustomHlsJsLoader
