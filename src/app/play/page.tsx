@@ -593,7 +593,7 @@ function PlayPageClient() {
         }
         // 执行原始load方法
         // load(context, config, callbacks);
-
+customload(context, config, callbacks);
    //     this.queue = [];
    // this.activeRequests = 0;
    // this.maxConcurrent = 6; // 自定义最大并发请求数
