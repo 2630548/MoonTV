@@ -583,7 +583,40 @@ function PlayPageClient() {
           };
         }
         // 执行原始load方法
-        load(context, config, callbacks);
+        // load(context, config, callbacks);
+
+        this.queue = [];
+    this.activeRequests = 0;
+    this.maxConcurrent = 6; // 自定义最大并发请求数
+customload(context, config, callbacks) {
+    if (this.activeRequests < this.maxConcurrent) {
+      this.activeRequests++;
+      // 使用 Fetch API 或 XMLHttpRequest 加载分片
+      fetch(context.url)
+        .then(response => response.arrayBuffer())
+        .then(data => {
+          this.activeRequests--;
+          callbacks.onSuccess({ url: context.url, data });
+          this.processQueue();
+        })
+        .catch(err => {
+          this.activeRequests--;
+          callbacks.onError(err);
+          processQueue();
+        });
+    } else {
+      this.queue.push({ context, config, callbacks });
+    }
+  }
+
+  processQueue() {
+    if (this.queue.length && this.activeRequests < this.maxConcurrent) {
+      const { context, config, callbacks } = this.queue.shift();
+      customload(context, config, callbacks);
+    }
+  }
+
+        
       };
     }
   }
@@ -1277,7 +1310,8 @@ function PlayPageClient() {
               lowLatencyMode: true, // 开启低延迟 LL-HLS
 
               /* 缓冲/内存相关 */
-              maxBufferLength: 300, // 前向缓冲最大 30s，过大容易导致高延迟
+              maxBufferLength: 30, // 前向缓冲最大 30s，过大容易导致高延迟
+              maxMaxBufferLength: 300,
               backBufferLength: 30, // 仅保留 30s 已播放内容，避免内存占用
               maxBufferSize: 100 * 1000 * 1000, // 约 60MB，超出后触发清理
               // maxConcurrentRequests: 6,    // 最大并发请求数
