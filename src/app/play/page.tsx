@@ -558,73 +558,193 @@ function PlayPageClient() {
     }
   };
 
-  class CustomHlsJsLoader extends Hls.DefaultConfig.loader {    
-    queue = [];
-    activeRequests = 0;
-    maxConcurrent = 4; // 自定义最大并发请求数
-    
+  class CustomHlsJsLoader extends Hls.DefaultConfig.loader {
     constructor(config: any) {
-      super(config);
-  
-      const load = this.load.bind(this);
-      this.load = function (context: any, config: any, callbacks: any) {
-        // 拦截manifest和level请求
-        if (
-          (context as any).type === 'manifest' ||
-          (context as any).type === 'level'
-        ) {
-          const onSuccess = callbacks.onSuccess;
-          callbacks.onSuccess = function (
-            response: any,
-            stats: any,
-            context: any
-          ) {
-            // 如果是m3u8文件，处理内容以移除广告分段
-            if (response.data && typeof response.data === 'string') {
-              // 过滤掉广告段 - 实现更精确的广告过滤逻辑
-              response.data = filterAdsFromM3U8(response.data);
-            }
-            return onSuccess(response, stats, context, null);
-          };
-        }
-        // 执行原始load方法
-         load(context, config, callbacks);
-// customload(context, config, callbacks);
-   //     this.queue = [];
-   // this.activeRequests = 0;
-   // this.maxConcurrent = 6; // 自定义最大并发请求数
-function customload(context: any, config: any, callbacks: any) {
-    if (this.activeRequests < this.maxConcurrent) {
-      this.activeRequests++;
-      // 使用 Fetch API 或 XMLHttpRequest 加载分片
-      fetch(context.url)
-        .then(response => response.arrayBuffer())
-        .then(data => {
-          this.activeRequests--;
-          callbacks.onSuccess({ url: context.url, data });
-          this.processQueue();
-        })
-        .catch(err => {
-          this.activeRequests--;
-          callbacks.onError(err);
-          processQueue();
-        });
-    } else {
-      this.queue.push({ context, config, callbacks });
-    }
-  }
-
-  function processQueue() {
-    if (this.queue.length && this.activeRequests < this.maxConcurrent) {
-      const { context, config, callbacks } = this.queue.shift();
-      customload(context, config, callbacks);
-    }
-  }
-
+        super(config);
+        const load = this.load.bind(this);
         
-      };
+        // 创建线程池
+        const threadPool = new Map();
+        const maxThreads = navigator.hardwareConcurrency || 4; // 获取CPU核心数或默认4线程
+        
+        this.load = function (context: any, config: any, callbacks: any) {
+            // 拦截manifest和level请求
+            if (context.type === 'manifest' || context.type === 'level') {
+                const onSuccess = callbacks.onSuccess;
+                callbacks.onSuccess = function (response: any, stats: any, context: any) {
+                    if (response.data && typeof response.data === 'string') {
+                        response.data = filterAdsFromM3U8(response.data);
+                    }
+                    return onSuccess(response, stats, context);
+                };
+                // 执行原始load方法
+                load(context, config, callbacks);
+            } 
+            // TS片段请求 - 使用多线程加载
+            else if (context.type === 'frag') {
+                this.loadTsSegmentWithThreads(context, config, callbacks, threadPool, maxThreads);
+            } 
+            // 其他类型请求
+            else {
+                load(context, config, callbacks);
+            }
+        };
     }
-  }
+
+    /**
+     * 使用多线程加载TS片段
+     */
+    loadTsSegmentWithThreads(context: any, config: any, callbacks: any, threadPool: Map<number, Worker>, maxThreads: number) {
+        const url = context.url;
+        const frag = context.frag;
+        const progressCallback = callbacks.onProgress;
+        const successCallback = callbacks.onSuccess;
+        const errorCallback = callbacks.onError;
+        
+        // 创建或复用Web Worker
+        const workerId = Math.floor(Math.random() * maxThreads);
+        let worker = threadPool.get(workerId);
+        
+        if (!worker) {
+            worker = this.createTsLoaderWorker();
+            threadPool.set(workerId, worker);
+        }
+        
+        // 设置超时
+        const timeout = setTimeout(() => {
+            worker!.terminate();
+            threadPool.delete(workerId);
+            errorCallback({ type: 'networkError', details: 'timeout', fatal: false }, context);
+        }, config.timeout || 10000);
+        
+        // 处理Worker消息
+        worker.onmessage = (e) => {
+            if (e.data.type === 'progress') {
+                progressCallback(e.data.data, context);
+            } else if (e.data.type === 'success') {
+                clearTimeout(timeout);
+                successCallback({
+                    url: url,
+                    data: e.data.data,
+                }, {
+                    trequest: e.data.stats.trequest,
+                    tfirst: e.data.stats.tfirst,
+                    tload: e.data.stats.tload,
+                    loaded: e.data.stats.loaded
+                }, context);
+            } else if (e.data.type === 'error') {
+                clearTimeout(timeout);
+                errorCallback(e.data.error, context);
+            }
+        };
+        
+        // 发送加载请求到Worker
+        worker.postMessage({
+            type: 'load',
+            url: url,
+            frag: frag,
+            config: config
+        });
+    }
+    
+    /**
+     * 创建TS加载专用的Web Worker
+     */
+    createTsLoaderWorker(): Worker {
+        const workerCode = `
+            self.onmessage = function(e) {
+                if (e.data.type !== 'load') return;
+                
+                const url = e.data.url;
+                const frag = e.data.frag;
+                const config = e.data.config;
+                const stats = {
+                    trequest: performance.now(),
+                    tfirst: 0,
+                    tload: 0,
+                    loaded: 0
+                };
+                
+                const xhr = new XMLHttpRequest();
+                xhr.open('GET', url, true);
+                xhr.responseType = 'arraybuffer';
+                
+                xhr.onprogress = function(event) {
+                    if (event.lengthComputable) {
+                        stats.loaded = event.loaded;
+                        stats.tfirst = stats.tfirst || performance.now();
+                        self.postMessage({
+                            type: 'progress',
+                            data: {
+                                length: event.total,
+                                loaded: event.loaded
+                            },
+                            stats: stats
+                        });
+                    }
+                };
+                
+                xhr.onload = function() {
+                    stats.tload = performance.now();
+                    if (xhr.status >= 200 && xhr.status < 300) {
+                        self.postMessage({
+                            type: 'success',
+                            data: xhr.response,
+                            stats: stats
+                        });
+                    } else {
+                        self.postMessage({
+                            type: 'error',
+                            error: {
+                                type: 'networkError',
+                                details: 'httpStatus' + xhr.status,
+                                fatal: false
+                            }
+                        });
+                    }
+                };
+                
+                xhr.onerror = function() {
+                    self.postMessage({
+                        type: 'error',
+                        error: {
+                            type: 'networkError',
+                            details: 'xhrError',
+                            fatal: false
+                        }
+                    });
+                };
+                
+                // 设置请求头
+                if (config.headers) {
+                    for (let header in config.headers) {
+                        xhr.setRequestHeader(header, config.headers[header]);
+                    }
+                }
+                
+                // 设置超时
+                if (config.timeout) {
+                    xhr.timeout = config.timeout;
+                    xhr.ontimeout = function() {
+                        self.postMessage({
+                            type: 'error',
+                            error: {
+                                type: 'networkError',
+                                details: 'timeout',
+                                fatal: false
+                            }
+                        });
+                    };
+                }
+                
+                xhr.send();
+            };
+        `;
+        
+        const blob = new Blob([workerCode], { type: 'application/javascript' });
+        return new Worker(URL.createObjectURL(blob));
+    }
+}
 
   // 当集数索引变化时自动更新视频地址
   useEffect(() => {
