@@ -559,212 +559,34 @@ function PlayPageClient() {
   };
 
  class CustomHlsJsLoader extends Hls.DefaultConfig.loader {
-    private threadPool: Worker[];
-    private maxThreads: number;
-
     constructor(config: any) {
-        super(config);
-        this.maxThreads = navigator.hardwareConcurrency || 4;
-        this.threadPool = Array(this.maxThreads).fill(null).map(() => this.createTsLoaderWorker());
-        
-        const originalLoad = this.load.bind(this);
-        
-        this.load = function (context: any, config: any, callbacks: any) {
-            // 拦截manifest和level请求
-            if (context.type === 'manifest' || context.type === 'level') {
-                const onSuccess = callbacks.onSuccess;
-                callbacks.onSuccess = function (response: any, stats: any, context: any) {
-                    if (response.data && typeof response.data === 'string') {
-                        response.data = filterAdsFromM3U8(response.data);
-                    }
-                    return onSuccess(response, stats, context);
-                };
-                originalLoad(context, config, callbacks);
-            } 
-            // TS片段请求 - 使用多线程加载
-            else if (context.type === 'frag') {
-                this.loadTsSegmentWithThreads(context, config, callbacks);
-            } 
-            // 其他类型请求
-            else {
-              this.loadTsSegmentWithThreads(context, config, callbacks);
-               // originalLoad(context, config, callbacks);
+      super(config);
+      const load = this.load.bind(this);
+      this.load = function (context: any, config: any, callbacks: any) {
+        // 拦截manifest和level请求
+        if (
+          (context as any).type === 'manifest' ||
+          (context as any).type === 'level'
+        ) {
+          const onSuccess = callbacks.onSuccess;
+          callbacks.onSuccess = function (
+            response: any,
+            stats: any,
+            context: any
+          ) {
+            // 如果是m3u8文件，处理内容以移除广告分段
+            if (response.data && typeof response.data === 'string') {
+              // 过滤掉广告段 - 实现更精确的广告过滤逻辑
+              response.data = filterAdsFromM3U8(response.data);
             }
-        };
+            return onSuccess(response, stats, context, null);
+          };
+        }
+        // 执行原始load方法
+        load(context, config, callbacks);
+      };
     }
-
-    private loadTsSegmentWithThreads(context: any, config: any, callbacks: any) {
-        const worker = this.getAvailableWorker();
-        const requestId = Math.random().toString(36).substring(2, 10);
-        
-        const timeout = setTimeout(() => {
-            worker.postMessage({ type: 'abort', id: requestId });
-            callbacks.onError({ type: 'networkError', details: 'timeout', fatal: false }, context);
-        }, config.timeout || 10000);
-
-        const handleMessage = (e: MessageEvent) => {
-            if (e.data.id !== requestId) return;
-
-            switch (e.data.type) {
-                case 'progress':
-                    callbacks.onProgress(e.data.data, context);
-                    break;
-                case 'success':
-                    clearTimeout(timeout);
-                    callbacks.onSuccess({
-                        url: context.url,
-                        data: e.data.data,
-                    }, {
-                        trequest: e.data.stats.trequest,
-                        tfirst: e.data.stats.tfirst,
-                        tload: e.data.stats.tload,
-                        loaded: e.data.stats.loaded
-                    }, context);
-                    worker.removeEventListener('message', handleMessage);
-                    break;
-                case 'error':
-                    clearTimeout(timeout);
-                    callbacks.onError(e.data.error, context);
-                    worker.removeEventListener('message', handleMessage);
-                    break;
-            }
-        };
-
-        worker.addEventListener('message', handleMessage);
-        
-        // 只发送可以序列化的数据
-        worker.postMessage({
-            type: 'load',
-            id: requestId,
-            url: context.url,
-            config: {
-                timeout: config.timeout,
-                headers: config.headers
-            }
-        });
-    }
-
-    private getAvailableWorker(): Worker {
-        // 简单的轮询选择worker
-        return this.threadPool[Math.floor(Math.random() * this.threadPool.length)];
-    }
-
-    private createTsLoaderWorker(): Worker {
-        const workerCode = `
-            const activeRequests = new Map();
-            
-            self.onmessage = function(e) {
-                const { type, id, url, config } = e.data;
-                
-                if (type === 'load') {
-                    const stats = {
-                        trequest: performance.now(),
-                        tfirst: 0,
-                        tload: 0,
-                        loaded: 0
-                    };
-                    
-                    const xhr = new XMLHttpRequest();
-                    activeRequests.set(id, xhr);
-                    
-                    xhr.open('GET', url, true);
-                    xhr.responseType = 'arraybuffer';
-                    
-                    xhr.onprogress = function(event) {
-                        if (event.lengthComputable) {
-                            stats.loaded = event.loaded;
-                            stats.tfirst = stats.tfirst || performance.now();
-                            self.postMessage({
-                                type: 'progress',
-                                id: id,
-                                data: {
-                                    length: event.total,
-                                    loaded: event.loaded
-                                },
-                                stats: stats
-                            });
-                        }
-                    };
-                    
-                    xhr.onload = function() {
-                        activeRequests.delete(id);
-                        stats.tload = performance.now();
-                        if (xhr.status >= 200 && xhr.status < 300) {
-                            self.postMessage({
-                                type: 'success',
-                                id: id,
-                                data: xhr.response,
-                                stats: stats
-                            });
-                        } else {
-                            self.postMessage({
-                                type: 'error',
-                                id: id,
-                                error: {
-                                    type: 'networkError',
-                                    details: 'httpStatus' + xhr.status,
-                                    fatal: false
-                                }
-                            });
-                        }
-                    };
-                    
-                    xhr.onerror = function() {
-                        activeRequests.delete(id);
-                        self.postMessage({
-                            type: 'error',
-                            id: id,
-                            error: {
-                                type: 'networkError',
-                                details: 'xhrError',
-                                fatal: false
-                            }
-                        });
-                    };
-                    
-                    if (config.headers) {
-                        for (let header in config.headers) {
-                            xhr.setRequestHeader(header, config.headers[header]);
-                        }
-                    }
-                    
-                    if (config.timeout) {
-                        xhr.timeout = config.timeout;
-                        xhr.ontimeout = function() {
-                            activeRequests.delete(id);
-                            self.postMessage({
-                                type: 'error',
-                                id: id,
-                                error: {
-                                    type: 'networkError',
-                                    details: 'timeout',
-                                    fatal: false
-                                }
-                            });
-                        };
-                    }
-                    
-                    xhr.send();
-                } else if (type === 'abort') {
-                    const xhr = activeRequests.get(id);
-                    if (xhr) {
-                        xhr.abort();
-                        activeRequests.delete(id);
-                    }
-                }
-            };
-        `;
-        
-        const blob = new Blob([workerCode], { type: 'application/javascript' });
-        return new Worker(URL.createObjectURL(blob));
-    }
-
-    destroy() {
-        super.destroy();
-        this.threadPool.forEach(worker => worker.terminate());
-        this.threadPool = [];
-    }
-}
+  }
 
   // 当集数索引变化时自动更新视频地址
   useEffect(() => {
