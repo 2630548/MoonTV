@@ -593,7 +593,7 @@ customload(context, config, callbacks);
    //     this.queue = [];
    // this.activeRequests = 0;
    // this.maxConcurrent = 6; // 自定义最大并发请求数
-function customload(context, config, callbacks) {
+function customload(context: any, config: any, callbacks: any) {
     if (this.activeRequests < this.maxConcurrent) {
       this.activeRequests++;
       // 使用 Fetch API 或 XMLHttpRequest 加载分片
