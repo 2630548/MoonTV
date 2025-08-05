@@ -11,6 +11,14 @@
 			"name": "黑木耳",
 			"detail": "https://heimuer.tv"
 		},
+		"suoni": {
+			"api": "https://suoniapi.com/api.php/provide/vod/?ac=list",
+			"name": "索尼"
+		},
+		"taopian": {
+			"api": "https://taopianapi.com/cjapi/mc/vod/json.html",
+			"name": "淘片"
+		},
 		"ruyi": {
 			"api": "http://cj.rycjapi.com/api.php/provide/vod",
 			"name": "如意资源"
@@ -22,6 +30,11 @@
 		"tyyszy": {
 			"api": "https://tyyszy.com/api.php/provide/vod",
 			"name": "天涯资源"
+		},
+		"hhzy": {
+			"api": "https://hhzyapi.com/api.php/provide/vod",
+			"name": "火狐",
+			"detail": "https://hhzyapi.com"
 		},
 		"ffzy": {
 			"api": "http://ffzy5.tv/api.php/provide/vod",
@@ -76,6 +89,11 @@
 		"ikun": {
 			"api": "https://ikunzyapi.com/api.php/provide/vod",
 			"name": "iKun资源"
+		},
+		"huya": {
+			"api": "https://www.huyaapi.com/api.php/provide/vod/from/hym3u8",
+			"name": "虎牙",
+			"detail":"https://www.huyaapi.com"
 		},
 		"lzi": {
 			"api": "https://cj.lziapi.com/api.php/provide/vod",
