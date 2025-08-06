@@ -585,10 +585,10 @@ function PlayPageClient() {
         }
         // 执行原始load方法
         if(context.frag)
-        console.log(new Date()+`[加载分片] SN=${context.frag.sn}, URL=${context.frag.url}`);
+        console.log(new Date()+`[加载] SN=${context.frag.sn}, URL=${context.frag.url}`);
         load(context, config, callbacks);
         if(context.frag)
-        console.log(new Date()+`[分片完成] SN=${context.frag.sn}`);
+        console.log(new Date()+`[完成] SN=${context.frag.sn}`);
       };
     }
   }
