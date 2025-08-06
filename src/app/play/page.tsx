@@ -1299,10 +1299,10 @@ function PlayPageClient() {
             ensureVideoSource(video, url);
 
             hls.on(Hls.Events.FRAG_LOADING, (event, data) => {
-    console.log(new Date()+`[加载分片] SN=${data.frag.sn}, URL=${data.frag.url}`);
+    console.log(new Date()+`[加载] SN=${data.frag.sn}, URL=${data.frag.url}`);
 });
 hls.on(Hls.Events.FRAG_LOADED, (event, data) => {
-    console.log(new Date()+`[分片完成] SN=${data.frag.sn}`);
+    console.log(new Date()+`[完成] SN=${data.frag.sn}`);
 });
 
 
