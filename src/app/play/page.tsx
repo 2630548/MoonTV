@@ -584,7 +584,9 @@ function PlayPageClient() {
           };
         }
         // 执行原始load方法
+        console.log(new Date()+`[加载分片] SN=${context.frag.sn}, URL=${context.frag.url}`);
         load(context, config, callbacks);
+        console.log(new Date()+`[分片完成] SN=${context.frag.sn}`);
       };
     }
   }
@@ -1298,12 +1300,7 @@ function PlayPageClient() {
 
             ensureVideoSource(video, url);
 
-            hls.on(Hls.Events.FRAG_LOADING, (event, data) => {
-    console.log(new Date()+`[加载分片] SN=${data.frag.sn}, URL=${data.frag.url}`);
-});
-hls.on(Hls.Events.FRAG_LOADED, (event, data) => {
-    console.log(new Date()+`[分片完成] SN=${data.frag.sn}`);
-});
+
 
 
             hls.on(Hls.Events.ERROR, function (event: any, data: any) {
