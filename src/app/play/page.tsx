@@ -1972,6 +1972,7 @@ hls.on(Hls.Events.FRAG_LOADED, (event, data) => {
             >
               <EpisodeSelector
                 totalEpisodes={totalEpisodes}
+                episodes_titles={detail?.episodes_titles || []}
                 value={currentEpisodeIndex + 1}
                 onChange={handleEpisodeChange}
                 onSourceChange={handleSourceChange}
