@@ -1341,7 +1341,7 @@ function PlayPageClient() {
               lowLatencyMode: true, // 开启低延迟 LL-HLS
 
               /* 缓冲/内存相关 */
-              maxBufferLength: 100, // 前向缓冲最大 30s，过大容易导致高延迟
+              maxBufferLength: 500, // 前向缓冲最大 30s，过大容易导致高延迟
               maxMaxBufferLength: 1000,
               backBufferLength: 100, // 仅保留 30s 已播放内容，避免内存占用
               maxBufferSize: 300 * 1000 * 1000, // 约 60MB，超出后触发清理
