@@ -28,36 +28,23 @@ jobs:
           node-version: 20
           cache: 'pnpm'
 
-      # 4. 安装依赖（pnpm）
-      - run: pnpm install
+      # 4. 安装依赖（用 pnpm-lock.yaml）
+      - run: pnpm install --frozen-lockfile
 
-      # 5. 生成 package-lock.json
-      - run: npm install --package-lock-only
-
-      # 6. 如果 package-lock.json 有变化，提交回仓库
-      - run: |
-          if [ -n "$(git status --porcelain package-lock.json)" ]; then
-            git config --global user.name "github-actions[bot]"
-            git config --global user.email "github-actions[bot]@users.noreply.github.com"
-            git add package-lock.json
-            git commit -m "chore: update package-lock.json [skip ci]"
-            git push
-          fi
-
-      # 7. 构建
+      # 5. 构建
       - run: pnpm build
 
-      # 8. 打包输出
+      # 6. 打包输出
       - run: |
           mkdir output
-          cp -r .next public package.json package-lock.json pnpm-lock.yaml output/
+          cp -r .next public package.json pnpm-lock.yaml output/
           cd output && zip -r ../moontv.zip .
 
-      # 9. 读取 package.json 的版本号
+      # 7. 获取 package.json 的版本号
       - id: get_version
         run: echo "VERSION=$(node -p 'require("./package.json").version')" >> $GITHUB_ENV
 
-      # 10. 发布 Release（版本号同步 package.json）
+      # 8. 发布 Release
       - uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ env.VERSION }}
