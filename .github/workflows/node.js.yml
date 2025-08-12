@@ -12,10 +12,8 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -27,6 +25,9 @@ jobs:
         uses: pnpm/action-setup@v4
         with:
           version: 10.14.0
+
+      - name: Check pnpm version
+        run: pnpm --version  # 验证 pnpm 是否安装成功且可用
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
