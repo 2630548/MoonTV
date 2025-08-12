@@ -20,7 +20,7 @@ jobs:
         cache: 'npm'       # 缓存npm依赖
         
     - name: Install dependencies
-      run: npm ci          # 使用ci比install更严格，适合自动化环境
+      run: npm install          # 使用ci比install更严格，适合自动化环境
       
     - name: Build project  # 执行打包命令（根据你的package.json中的build脚本）
       run: npm run build
