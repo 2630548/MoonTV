@@ -34,7 +34,7 @@ jobs:
       - name: Generate runtime and manifest
         run: pnpm gen:runtime && pnpm gen:manifest
 
-      - name: Build static site (with output: 'export')
+      - name: "Build static site (with output: 'export')"
         run: pnpm build
 
       - name: Zip static output
