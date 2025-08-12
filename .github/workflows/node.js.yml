@@ -30,7 +30,7 @@ jobs:
       - run: pnpm build
 
       # 静态导出
-      - run: pnpm export
+      - run: npx next export  # 生成静态html文件到 out/
 
       # 压缩导出目录
       - run: |
