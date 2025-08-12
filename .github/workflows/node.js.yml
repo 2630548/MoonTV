@@ -1,4 +1,4 @@
-name: Build and Export Static Site
+name: Static Build and Release
 
 on:
   push:
@@ -14,37 +14,44 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repo
+        uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 10.14.0
-
-      - uses: actions/setup-node@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'pnpm'
 
-      - run: pnpm install --frozen-lockfile
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.14.0
 
-      - run: pnpm build
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
-      # 静态导出
-      - run: pnpm run export  # 生成静态html文件到 out/
+      - name: Generate runtime and manifest
+        run: pnpm gen:runtime && pnpm gen:manifest
 
-      # 压缩导出目录
-      - run: |
-          cd out
-          zip -r ../site.zip .
+      - name: Build static site (with output: 'export')
+        run: pnpm build
 
-      - id: get_version
+      - name: Zip static output
+        run: |
+          cd .next/export
+          zip -r ../../../moontv-static.zip .
+
+      - name: Get version from package.json
+        id: get_version
         run: echo "VERSION=$(node -p 'require(\"./package.json\").version')" >> $GITHUB_ENV
 
-      - uses: softprops/action-gh-release@v1
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ env.VERSION }}
-          name: "Static Site v${{ env.VERSION }}"
-          body: "自动构建静态站点发布 v${{ env.VERSION }}"
-          files: site.zip
+          name: Release v${{ env.VERSION }}
+          body: Static site auto build and release version v${{ env.VERSION }}
+          files: moontv-static.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
