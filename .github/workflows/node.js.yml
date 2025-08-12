@@ -1,4 +1,4 @@
-name: Build and Release
+name: Build and Export Static Site
 
 on:
   push:
@@ -14,42 +14,37 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. 拉取代码
       - uses: actions/checkout@v4
 
-      # 2. 安装 pnpm
       - uses: pnpm/action-setup@v4
         with:
           version: 10.14.0
 
-      # 3. 安装 Node.js
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'pnpm'
 
-      # 4. 安装依赖（用 pnpm-lock.yaml）
       - run: pnpm install --frozen-lockfile
 
-      # 5. 构建
       - run: pnpm build
 
-      # 6. 打包输出
+      # 静态导出
+      - run: pnpm export
+
+      # 压缩导出目录
       - run: |
-          mkdir output
-          cp -r .next public package.json pnpm-lock.yaml output/
-          cd output && zip -r ../moontv.zip .
+          cd out
+          zip -r ../site.zip .
 
-      # 7. 获取 package.json 的版本号
       - id: get_version
-        run: echo "VERSION=$(node -p 'require("./package.json").version')" >> $GITHUB_ENV
+        run: echo "VERSION=$(node -p 'require(\"./package.json\").version')" >> $GITHUB_ENV
 
-      # 8. 发布 Release
       - uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ env.VERSION }}
-          name: "Release v${{ env.VERSION }}"
-          body: "自动构建发布版本 v${{ env.VERSION }}"
-          files: moontv.zip
+          name: "Static Site v${{ env.VERSION }}"
+          body: "自动构建静态站点发布 v${{ env.VERSION }}"
+          files: site.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
