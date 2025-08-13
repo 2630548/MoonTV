@@ -150,7 +150,8 @@
 		},
 		"iqiyi": {
 			"api": "https://www.iqiyizyapi.com/api.php/provide/vod",
-			"name": "iqiyi资源"
+			"name": "iqiyi资源",
+			"detail":"https://www.iqiyizy.com"
 		},
 		"hwba": {
 			"api": "https://cjhwba.com/api.php/provide/vod",
