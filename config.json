@@ -1,6 +1,11 @@
 {
 	"cache_time": 7200,
 	"api_site": {
+		"xingba": {
+			"api": "https://xingba111.com/api.php/provide/vod",
+			"name": "辛巴资源",
+			"detail": "https://sex8zy8.com/"
+		},
 		"kbzy": {
 			"api": "https://gayapi.com/api.php/provide/vod",
 			"name": "快播资源",
