@@ -4,7 +4,7 @@
 		"xxibao": {
 			"api": "https://www.xxibaozyw.com/api.php/provide/vod/?ac=list",
 			"name": "x细胞资源",
-			"detail": "https://www.xxibaozyw.com/api.php/provide/vod/?ac=detail"
+			"detail": "https://xxibaozyw.com"
 		},
 		"xiaoji": {
 			"api": "https://api.xiaojizy.live/provide/vod?ac=list",
