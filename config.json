@@ -116,7 +116,7 @@
 			"name": "卧龙资源"
 		},
 		"jisu": {
-			"api": "https://jszyapi.com/api.php/provide/vod",
+			"api": "https://jszyapi.com/api.php/provide/vod/at/json",
 			"name": "极速资源",
 			"detail": "https://jszyapi.com"
 		},
