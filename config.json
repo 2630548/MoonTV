@@ -47,7 +47,8 @@
 		},
 		"bfzy": {
 			"api": "https://bfzyapi.com/api.php/provide/vod",
-			"name": "暴风资源"
+			"name": "暴风资源",
+			"detail": "https://bfzy.tv"
 		},
 		"tyyszy": {
 			"api": "https://tyyszy.com/api.php/provide/vod",
