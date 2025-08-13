@@ -63,8 +63,9 @@
 			"name": "闪电"
 		},
 		"suoni": {
-			"api": "https://suoniapi.com/api.php/provide/vod",
-			"name": "索尼"
+			"api": "https://suoniapi.com/api.php/provide/vod/?ac=list",
+			"name": "索尼",
+			"detail": "https://suonizy.com/"
 		},
 		"taopian": {
 			"api": "https://taopianapi.com/cjapi/mc/vod/json.html",
