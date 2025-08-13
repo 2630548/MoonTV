@@ -1,6 +1,11 @@
 {
 	"cache_time": 7200,
 	"api_site": {
+		"xiaoji": {
+			"api": "https://api.xiaojizy.live/provide/vod?ac=list",
+			"name": "小鸡资源",
+			"detail": "https://xiaojizy.live"
+		},
 		"danaizi": {
 			"api": "https://apidanaizi.com/api.php/provide/vod",
 			"name": "大奶子资源"
