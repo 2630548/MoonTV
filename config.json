@@ -56,7 +56,7 @@
 			"detail": "https://api.xinlangapi.com"
 		},
 		"guangsu": {
-			"api": "https://api.guangsuapi.com/api.php/provide/vod",
+			"api": "https://api.guangsuapi.com/api.php/provide/vod/josn",
 			"name": "光速",
 			"detail": "https://api.guangsuapi.com"
 		},
