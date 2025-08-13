@@ -233,7 +233,8 @@
 
 		"subo": {
 			"api": "https://subocaiji.com/api.php/provide/vod",
-			"name": "速播资源"
+			"name": "速播资源",
+			"detail": "https://www.suboziyuan.net/"
 		},
 		"fczy": {
 			"api": "https://api.fczy888.me/api.php/provide/vod",
