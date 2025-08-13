@@ -4,7 +4,7 @@
 		"kuaiche": {
 			"api": "https://caiji.kuaichezy.org/api.php/provide/vod/?ac=list",
 			"name": "快车资源",
-			"detail": "https://kuaichezy.com/"
+			"detail": "https://kuaichezy.com"
 		},
 		"maoyan": {
 			"api": "https://api.maoyanapi.top/api.php/provide/vod",
@@ -66,8 +66,9 @@
 			"detail": "https://1080zyk.com"
 		},
 		"hongniu": {
-			"api": "https://www.hongniuzy2.com/api.php/provide/vod",
-			"name": "红牛"
+			"api": "https://www.hongniuzy2.com/api.php/provide/vod/at/josn",
+			"name": "红牛",
+			"detail": "https://hongniuzy.net"
 		},
 		"sdzy": {
 			"api": "https://sdzyapi.com/api.php/provide/vod",
@@ -234,7 +235,7 @@
 		"subo": {
 			"api": "https://subocaiji.com/api.php/provide/vod",
 			"name": "速播资源",
-			"detail": "https://www.suboziyuan.net/"
+			"detail": "https://www.suboziyuan.net"
 		},
 		"fczy": {
 			"api": "https://api.fczy888.me/api.php/provide/vod",
