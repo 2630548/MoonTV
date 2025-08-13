@@ -1,6 +1,16 @@
 {
 	"cache_time": 7200,
 	"api_site": {
+		"thzy": {
+			"api": "https://thzy1.me/api.php/provide/vod/?ac=list",
+			"name": "桃花资源",
+			"detail": "https://thzy8.me"
+		},
+		"bwzy": {
+			"api": "https://api.bwzyz.com/api.php/provide/vod/at/json",
+			"name": "百万资源",
+			"detail": "https://r8i0dlggv3i.bwzyz.com"
+		},
 		"dadizy": {
 			"api": "https://dadiapi.com/feifei2",
 			"name": "大地资源",
