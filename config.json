@@ -217,7 +217,7 @@
 		},
 
 		"ckzy": {
-			"api": "https://www.ckzy1.com/api.php/provide/vod",
+			"api": "https://ckzy.me/api.php/provide/vod/?ac=list",
 			"name": "CK资源",
 			"detail":"https://www.ckzy1.com",
 			"adult": true
