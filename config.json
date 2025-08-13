@@ -51,7 +51,7 @@
 			"detail": "https://heimuer.tv"
 		},
 		"xinlang": {
-			"api": "https://api.xinlangapi.com/xinlangapi.php/provide/vod",
+			"api": "https://api.xinlangapi.com/xinlangapi.php/provide/vod/josn",
 			"name": "新浪",
 			"detail": "https://api.xinlangapi.com"
 		},
