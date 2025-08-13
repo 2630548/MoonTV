@@ -51,8 +51,9 @@
 			"detail": "https://api.guangsuapi.com"
 		},
 		"1080zy": {
-			"api": "https://api.1080zyku.com/inc/api_mac10.php",
-			"name": "1080资源"
+			"api": "https://api.yzzy-api.com/inc/api_mac10.php",
+			"name": "1080资源",
+			"detail": "https://1080zyk.com/"
 		},
 		"hongniu": {
 			"api": "https://www.hongniuzy2.com/api.php/provide/vod",
