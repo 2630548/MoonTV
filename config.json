@@ -1,10 +1,25 @@
 {
 	"cache_time": 7200,
 	"api_site": {
+		"lajiao": {
+			"api": "https://apilj.com/api.php/provide/vod/at/json",
+			"name": "辣椒资源",
+			"detail": "http://lajiaozy.com"
+		},
+		"shayu": {
+			"api": "https://shayuapi.com/api.php/provide/vod/at/json",
+			"name": "鲨鱼资源",
+			"detail": "https://shayuzy5.com"
+		},
+		"jingpinx": {
+			"api": "https://www.jingpinx.com/api.php/provide/vod/?ac=list",
+			"name": "精品资源",
+			"detail": "https://jingpinx.com"
+		},
 		"ddzy": {
 			"api": "https://api.ddapi.cc/api.php/provide/vod/?ac=list",
 			"name": "滴滴资源",
-			"detail": "https://didizy.com/"
+			"detail": "https://didizy.com"
 		},
 		"zuisezy": {
 			"api": "https://api.zuiseapi.com/api.php/provide/vod/?ac=list",
