@@ -1,10 +1,15 @@
 {
 	"cache_time": 7200,
 	"api_site": {
+		"dadizy": {
+			"api": "https://dadiapi.com/feifei2",
+			"name": "大地资源",
+			"detail": "https://dadizy11.com"
+		},
 		"91jpzyw": {
 			"api": "https://91jpzyw.com/api.php/provide/vod/at/json",
 			"name": "91极品资源",
-			"detail": "https://91jpzyw.com/"
+			"detail": "https://91jpzyw.com"
 		},
 		"jyzy": {
 			"api": "https://jyzyapi.com/provide/vod/from/jinyingm3u8/at/json",
