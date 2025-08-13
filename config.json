@@ -1,6 +1,11 @@
 {
 	"cache_time": 7200,
 	"api_site": {
+		"xxibao": {
+			"api": "https://www.xxibaozyw.com/api.php/provide/vod/?ac=list",
+			"name": "x细胞资源",
+			"detail": "https://www.xxibaozyw.com/api.php/provide/vod/?ac=detail"
+		},
 		"xiaoji": {
 			"api": "https://api.xiaojizy.live/provide/vod?ac=list",
 			"name": "小鸡资源",
