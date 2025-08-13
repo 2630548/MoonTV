@@ -118,7 +118,8 @@
 		},
 		"mozhua": {
 			"api": "https://mozhuazy.com/api.php/provide/vod",
-			"name": "魔爪资源"
+			"name": "魔爪资源",
+			"detail": "https://mzzy.me"
 		},
 		"mdzy": {
 			"api": "https://www.mdzyapi.com/api.php/provide/vod",
