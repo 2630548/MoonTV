@@ -2,6 +2,11 @@
 	"cache_time": 7200,
 	"api_site": {
 		"dyttzy": {
+			"api": "https://gayapi.com/api.php/provide/vod",
+			"name": "快播资源",
+			"detail": "https://kbzy1.com"
+		},
+		"dyttzy": {
 			"api": "http://caiji.dyttzyapi.com/api.php/provide/vod",
 			"name": "电影天堂资源",
 			"detail": "http://caiji.dyttzyapi.com"
