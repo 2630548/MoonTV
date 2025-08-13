@@ -1,6 +1,16 @@
 {
 	"cache_time": 7200,
 	"api_site": {
+		"ddzy": {
+			"api": "https://api.ddapi.cc/api.php/provide/vod/?ac=list",
+			"name": "滴滴资源",
+			"detail": "https://didizy.com/"
+		},
+		"zuisezy": {
+			"api": "https://api.zuiseapi.com/api.php/provide/vod/?ac=list",
+			"name": "最色资源",
+			"detail": "https://zuisezy.com"
+		},
 		"aosikazy": {
 			"api": "https://aosikazy.com/api.php/provide/vod/?ac=list",
 			"name": "奥斯卡资源",
