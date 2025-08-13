@@ -70,7 +70,8 @@
 		},
 		"maotaizy": {
 			"api": "https://caiji.maotaizy.cc/api.php/provide/vod",
-			"name": "茅台资源"
+			"name": "茅台资源",
+			"detail": "https://mtzy5.com"
 		},
 		"wolong": {
 			"api": "https://wolongzyw.com/api.php/provide/vod",
