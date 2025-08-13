@@ -192,7 +192,7 @@
 		"souav": {
 			"api": "https://api.souavzy.vip/api.php/provide/vod/?ac=list",
 			"name": "souav资源",
-			"detail":"https://souavzy6.com"
+			"detail":"https://souavzy6.com",
 			"adult": true
 		},
 		"r155": {
