@@ -1,6 +1,11 @@
 {
 	"cache_time": 7200,
 	"api_site": {
+		"aosikazy": {
+			"api": "https://aosikazy.com/api.php/provide/vod/?ac=list",
+			"name": "奥斯卡资源",
+			"detail": "https://aosikazy1.com"
+		},
 		"siwazy": {
 			"api": "https://www.siwazyw.tv/api.php/provide/vod/at/json",
 			"name": "丝袜资源",
@@ -53,7 +58,8 @@
 		},
 		"danaizi": {
 			"api": "https://apidanaizi.com/api.php/provide/vod",
-			"name": "大奶子资源"
+			"name": "大奶子资源",
+			"detail": "https://danaizizy1.com"
 		},
 		"yutu": {
 			"api": "https://apiyutu.com/api.php/provide/vod",
