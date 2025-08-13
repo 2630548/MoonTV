@@ -1,6 +1,11 @@
 {
 	"cache_time": 7200,
 	"api_site": {
+		"fhzy": {
+			"api": "http://fhapi9.com/api.php/provide/vod/at/json/?ac=list",
+			"name": "番号资源",
+			"detail": "http://fhzy10.com"
+		},
 		"lebo": {
 			"api": "https://lbapi9.com/api.php/provide/vod/at/json",
 			"name": "乐播资源",
@@ -298,8 +303,9 @@
 			"adult": true
 		},
 		"lsb": {
-			"api": "https://apilsbzy1.com/api.php/provide/vod",
+			"api": "https://apilsbzy1.com/api.php/provide/vod/?ac=list",
 			"name": "lsb资源",
+			"detail": "https://laosebizy.com",
 			"adult": true
 		},
 		"huangcang": {
