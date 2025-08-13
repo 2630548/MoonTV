@@ -153,7 +153,8 @@
 		},
 		"baidu": {
 			"api": "https://api.apibdzy.com/api.php/provide/vod",
-			"name": "百度云资源"
+			"name": "百度云资源",
+			"detail":"https://bdzy.tv"
 		},
 
 		"ckzy": {
