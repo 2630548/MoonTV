@@ -1,6 +1,11 @@
 {
 	"cache_time": 7200,
 	"api_site": {
+		"maoyan": {
+			"api": "https://api.maoyanapi.top/api.php/provide/vod",
+			"name": "猫眼资源",
+			"detail": "https://www.maoyanzy.com"
+		},
 		"xxibao": {
 			"api": "https://www.xxibaozyw.com/api.php/provide/vod/?ac=list",
 			"name": "x细胞资源",
