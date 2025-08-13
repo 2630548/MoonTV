@@ -75,7 +75,8 @@
 		},
 		"taopian": {
 			"api": "https://taopianapi.com/cjapi/mc/vod/json.html",
-			"name": "淘片"
+			"name": "淘片",
+			"detail": "https://www.taopianzy.com/index.html"
 		},
 		"ruyi": {
 			"api": "http://cj.rycjapi.com/api.php/provide/vod",
