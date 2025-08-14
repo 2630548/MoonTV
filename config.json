@@ -1,6 +1,51 @@
 {
 	"cache_time": 7200,
 	"api_site": {
+        "pgxdy": {
+            "name": "黄资源",
+            "api": "https://www.pgxdy.com/api/json.php",
+            "detail": "https://www.pgxdy.com"
+        },
+        "sexnguon": {
+            "name": "色南国",
+            "api": "https://api.sexnguon.com/api.php/provide/vod",
+            "detail": "https://api.sexnguon.com"
+        },
+        "msnii": {
+            "name": "美少女资源",
+            "api": "https://www.msnii.com/api/json.php",
+            "detail": "https://www.msnii.com"
+        },
+        "kxgav": {
+            "name": "白嫖资源",
+            "api": "https://www.kxgav.com/api/json.php",
+            "detail": "https://www.kxgav.com"
+        },
+        "xrbsp": {
+            "name": "水机资源",
+            "api": "https://www.xrbsp.com/api/json.php",
+            "detail": "https://www.xrbsp.com"
+        },
+        "Naixx": {
+            "name": "奶香香",
+            "api": "https://Naixxzy.com/api.php/provide/vod",
+            "detail": "https://Naixxzy.com"
+        },
+        "91md": {
+            "name": "91麻豆",
+            "api": "https://91md.me/api.php/provide/vod",
+            "detail": "https://91md.me"
+        },
+        "p2100": {
+            "name": "飘零资源",
+            "api": "https://p2100.net/api.php/provide/vod",
+            "detail": "https://p2100.net"
+        },
+        "niuniu": {
+            "name": "牛牛点播",
+            "api": "https://api.niuniuzy.me/api.php/provide/vod",
+            "detail": "https://api.niuniuzy.me"
+        },
 		"yaya": {
 			"api": "https://cj.yayazy.net/api.php/provide/vod",
 			"name": "丫丫点播",
@@ -214,7 +259,8 @@
 		},
 		"dbzy": {
 			"api": "https://dbzy.tv/api.php/provide/vod",
-			"name": "豆瓣资源"
+			"name": "豆瓣资源",
+            "detail": "https://caiji.dbzy.tv"
 		},
 		"mozhua": {
 			"api": "https://mozhuazy.com/api.php/provide/vod",
@@ -228,7 +274,8 @@
 		},
 		"zuid": {
 			"api": "https://api.zuidapi.com/api.php/provide/vod",
-			"name": "最大资源"
+			"name": "最大资源",
+            "detail": "http://zuidazy.me"
 		},
 		"yinghua": {
 			"api": "https://m3u8.apiyhzy.com/api.php/provide/vod",
@@ -260,7 +307,8 @@
 		},
 		"xiaomaomi": {
 			"api": "https://zy.xmm.hk/api.php/provide/vod",
-			"name": "小猫咪资源"
+			"name": "小猫咪资源",
+            "detail": "https://zy.xmm.hk"
 		},
 		"iqiyi": {
 			"api": "https://www.iqiyizyapi.com/api.php/provide/vod",
