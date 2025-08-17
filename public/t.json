@@ -1,0 +1,169 @@
+{
+  "sites": [
+    {
+      "key": "pgxdy",
+      "name": "黄资源",
+      "type": 1,
+      "api": "https://www.pgxdy.com/api/json.php",
+      "ext": {
+        "detail": "https://www.pgxdy.com"
+      }
+    },
+    {
+      "key": "sexnguon",
+      "name": "色南国",
+      "type": 1,
+      "api": "https://api.sexnguon.com/api.php/provide/vod",
+      "ext": {
+        "detail": "https://api.sexnguon.com"
+      }
+    },
+    {
+      "key": "msnii",
+      "name": "美少女资源",
+      "type": 1,
+      "api": "https://www.msnii.com/api/json.php",
+      "ext": {
+        "detail": "https://www.msnii.com"
+      }
+    },
+    {
+      "key": "kxgav",
+      "name": "白嫖资源",
+      "type": 1,
+      "api": "https://www.kxgav.com/api/json.php",
+      "ext": {
+        "detail": "https://www.kxgav.com"
+      }
+    },
+    {
+      "key": "xrbsp",
+      "name": "水机资源",
+      "type": 1,
+      "api": "https://www.xrbsp.com/api/json.php",
+      "ext": {
+        "detail": "https://www.xrbsp.com"
+      }
+    },
+    {
+      "key": "Naixx",
+      "name": "奶香香",
+      "type": 1,
+      "api": "https://Naixxzy.com/api.php/provide/vod",
+      "ext": {
+        "detail": "https://Naixxzy.com"
+      }
+    },
+    {
+      "key": "91md",
+      "name": "91麻豆",
+      "type": 1,
+      "api": "https://91md.me/api.php/provide/vod",
+      "ext": {
+        "detail": "https://91md.me"
+      }
+    },
+    {
+      "key": "p2100",
+      "name": "飘零资源",
+      "type": 1,
+      "api": "https://p2100.net/api.php/provide/vod",
+      "ext": {
+        "detail": "https://p2100.net"
+      }
+    },
+    {
+      "key": "niuniu",
+      "name": "牛牛点播",
+      "type": 1,
+      "api": "https://api.niuniuzy.me/api.php/provide/vod",
+      "ext": {
+        "detail": "https://api.niuniuzy.me"
+      }
+    },
+    {
+      "key": "yaya",
+      "name": "丫丫点播",
+      "type": 1,
+      "api": "https://cj.yayazy.net/api.php/provide/vod",
+      "ext": {
+        "detail": "https://yayazy2.com"
+      }
+    },
+    {
+      "key": "fhzy",
+      "name": "番号资源",
+      "type": 1,
+      "api": "http://fhapi9.com/api.php/provide/vod/at/json/?ac=list",
+      "ext": {
+        "detail": "http://fhzy10.com"
+      }
+    },
+    {
+      "key": "lebo",
+      "name": "乐播资源",
+      "type": 1,
+      "api": "https://lbapi9.com/api.php/provide/vod/at/json",
+      "ext": {
+        "detail": "http://lebozy5.com"
+      }
+    },
+    {
+      "key": "semao",
+      "name": "色猫资源",
+      "type": 1,
+      "api": "https://caiji.semaozy.net/inc/apijson_vod.php",
+      "ext": {
+        "detail": "https://semaozy1.com"
+      }
+    },
+    {
+      "key": "senlin",
+      "name": "森林资源",
+      "type": 1,
+      "api": "https://slapibf.com/api.php/provide/vod/?ac=list",
+      "ext": {
+        "detail": "https://senlinzy2.com"
+      }
+    },
+    {
+      "key": "lajiao",
+      "name": "辣椒资源",
+      "type": 1,
+      "api": "https://apilj.com/api.php/provide/vod/at/json",
+      "ext": {
+        "detail": "http://lajiaozy.com"
+      }
+    },
+    {
+      "key": "shayu",
+      "name": "鲨鱼资源",
+      "type": 1,
+      "api": "https://shayuapi.com/api.php/provide/vod/at/json",
+      "ext": {
+        "detail": "https://shayuzy5.com"
+      }
+    },
+    {
+      "key": "jingpinx",
+      "name": "精品资源",
+      "type": 1,
+      "api": "https://www.jingpinx.com/api.php/provide/vod/?ac=list",
+      "ext": {
+        "detail": "https://jingpinx.com"
+      }
+    },
+    {
+      "key": "ddzy",
+      "name": "滴滴资源",
+      "type": 1,
+      "api": "https://api.ddapi.cc/api.php/provide/vod/?ac=list",
+      "ext": {
+        "detail": "https://didizy.com"
+      }
+    },
+    {
+      "key": "zuisezy",
+      "name": "最色资源",
+      "type": 1,
+      "api": "https://api.zuiseapi.com/api.php/provide/vod/?ac=list
