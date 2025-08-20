@@ -1,6 +1,16 @@
 {
 	"cache_time": 7200,
 	"api_site": {
+		"yparse": {
+            "name": "TV-步步高资源",
+            "api": "https://api.yparse.com/api/json",
+            "detail": "https://www.yparse.com"
+        },
+		"gdlsp": {
+            "name": "AV-香奶儿资源",
+            "api": "https://www.gdlsp.com/api/json.php",
+            "detail": "https://www.gdlsp.com"
+        },
         "pgxdy": {
             "name": "黄资源",
             "api": "https://www.pgxdy.com/api/json.php",
